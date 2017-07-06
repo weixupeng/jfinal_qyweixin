@@ -2,6 +2,13 @@
 
 jfinal_qyweixin是基于 jfinal-weixin二次开发而来，只需浏览 Demo 代码即可进行极速开发。同时支持微信企业号以及企业微信 
 
+微信公众号开源项目  
+【[weixin_pro(多公众号支持有后台)](http://git.oschina.net/javen205/weixin_pro)】  【[weixin_guide(公众号开发Demo)](http://git.oschina.net/javen205/weixin_guide)】
+【[jfinal-weixin](http://git.oschina.net/jfinal/jfinal-weixin)】
+
+支付宝、微信支付开源项目
+
+【[Android 微信、支付App支付SDK](http://git.oschina.net/javen205/JPay)】 【[IJPay 让支付触手可及，实现微信、支付宝系列支付](http://git.oschina.net/javen205/IJPay)】
 
 ### 官方文档
 
@@ -28,7 +35,7 @@ http://git.oschina.net/javen205/jfinal_qyweixin
 
 ### 更多支持
 
-- 交流群：[![QQ](http://pub.idqqimg.com/wpa/images/group.png)](https://jq.qq.com/?_wv=1027&k=47koFFR)(备注项目名称、进群发广告T)
+- 交流群：392214521(备注项目名称、进群发广告T)
 - Email：javen205@126.com
 
 <img src="http://img.blog.csdn.net/20170425211154361?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvenl3X2phdmE=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" width = "200" alt="如果对你有帮助，请随意打赏支持" align=center />
