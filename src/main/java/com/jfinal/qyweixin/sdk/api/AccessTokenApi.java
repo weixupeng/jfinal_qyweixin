@@ -45,7 +45,7 @@ public class AccessTokenApi {
         // 利用 appId 与 accessToken 建立关联，支持多账户
         IAccessTokenCache accessTokenCache = ApiConfigKit.getAccessTokenCache();
         
-        String accessTokenJson = accessTokenCache.get(ac.getCorpId());
+        String accessTokenJson = accessTokenCache.get(ac.getAgentId());
         if (StrKit.notBlank(accessTokenJson)) {
             AccessToken result = new AccessToken(accessTokenJson);
             if (result != null && result.isAvailable()) {
@@ -106,7 +106,7 @@ public class AccessTokenApi {
         if (null != result) {
             // 利用 appId 与 accessToken 建立关联，支持多账户
             IAccessTokenCache accessTokenCache = ApiConfigKit.getAccessTokenCache();
-            accessTokenCache.set(ac.getCorpId(), result.getCacheJson());
+            accessTokenCache.set(ac.getAgentId(), result.getCacheJson());
         }
         return result;
     }
