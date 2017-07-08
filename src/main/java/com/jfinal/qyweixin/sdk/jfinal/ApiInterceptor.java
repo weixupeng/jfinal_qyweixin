@@ -11,9 +11,10 @@ import com.jfinal.qyweixin.sdk.api.ApiConfigKit;
  * 以便在后续的操作中可以使用 ApiConfigKit.getApiConfig() 获取到该对象
  */
 public class ApiInterceptor implements Interceptor {
-    private static CorpIdParser _parser = new CorpIdParser.DefaultParameterCorpIdParser();
+    private static AgentIdParser _parser = new AgentIdParser.DefaultParameterAgentIdParser();
 
-    public static void setCorpIdParser(CorpIdParser parser) {
+    public static void setAgentIdParser(AgentIdParser parser) {
+    	System.out.println("setAgentIdParser");
         _parser = parser;
     }
 
@@ -23,12 +24,12 @@ public class ApiInterceptor implements Interceptor {
             throw new RuntimeException("控制器需要继承 ApiController");
 
         try {
-            String corpId = _parser.getCorpId(controller);
-            // 将 corpId 与当前线程绑定，以便在后续操作中方便获取ApiConfig对象： ApiConfigKit.getApiConfig();
-            ApiConfigKit.setThreadLocalCorpId(corpId);
+            String agentId = _parser.getAgentId(controller);
+            // 将 agentId 与当前线程绑定，以便在后续操作中方便获取ApiConfig对象： ApiConfigKit.getApiConfig();
+            ApiConfigKit.setThreadLocalAgentId(agentId);
             inv.invoke();
         } finally {
-            ApiConfigKit.removeThreadLocalCorpId();
+            ApiConfigKit.removeThreadLocalAgentId();
         }
     }
 }

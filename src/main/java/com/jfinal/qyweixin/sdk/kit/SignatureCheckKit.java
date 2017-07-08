@@ -50,17 +50,37 @@ public class SignatureCheckKit {
 		return result;
 		
 	}
-	
+	/**
+	 * 检测签名
+	 */
+	public boolean checkSignatures(String msgSignature, String timeStamp, String nonce,String encryptMessage) {
+		
+		if (StrKit.isBlank(msgSignature) || StrKit.isBlank(timeStamp) || StrKit.isBlank(nonce)) {
+			return false;
+		}
+		if (SignatureCheckKit.me.checkSignature(msgSignature, timeStamp, nonce ,encryptMessage)) {
+			return true;
+		}
+		else {
+			log.error("check signature failure: " +
+					" signature = " + msgSignature +
+					" timestamp = " + timeStamp +
+					" nonce = " + nonce+
+					" content = " + encryptMessage);
+			
+			return false;
+		}
+	}
 	
 	/**
 	 * 检测签名
 	 */
-	public boolean checkSignature(Controller controller,String xml) {
+	public boolean checkSignaturec(Controller controller,String xml) {
 		String signature = controller.getPara("msg_signature");
 		String timestamp = controller.getPara("timestamp");
 		String nonce = controller.getPara("nonce");
 		String content=getEncrypt(xml);
-		
+		System.out.println("checkSignature>"+xml+" content>"+content);
 		
 		if (StrKit.isBlank(signature) || StrKit.isBlank(timestamp) || StrKit.isBlank(nonce)) {
 			controller.renderText("check signature failure");
@@ -81,7 +101,7 @@ public class SignatureCheckKit {
 		}
 	}
 	
-	private String getEncrypt(String xml){
+	public String getEncrypt(String xml){
 		XmlHelper xmlHelper = XmlHelper.of(xml);
 		String content=xmlHelper.getString("//Encrypt");
 		return content;

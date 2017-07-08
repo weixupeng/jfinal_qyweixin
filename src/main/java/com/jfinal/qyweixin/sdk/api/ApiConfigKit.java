@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.jfinal.kit.StrKit;
-import com.jfinal.log.Log;
 import com.jfinal.qyweixin.sdk.cache.DefaultAccessTokenCache;
 import com.jfinal.qyweixin.sdk.cache.IAccessTokenCache;
 
@@ -13,10 +12,9 @@ import com.jfinal.qyweixin.sdk.cache.IAccessTokenCache;
  * 1：如果控制器继承自 MsgController 该过程是自动的，详细可查看 MsgInterceptor 与之的配合
  * 2：如果控制器继承自 ApiController 该过程是自动的，详细可查看 ApiInterceptor 与之的配合
  * 3：如果控制器没有继承自 MsgController、ApiController，则需要先手动调用
- *    ApiConfigKit.setThreadLocalCorpId(getCorpId) 来绑定 corpId 到线程之上
+ *    ApiConfigKit.setThreadLocalAgentId(getAgentId) 来绑定 agentId 到线程之上
  */
 public class ApiConfigKit {
-    private static final Log log = Log.getLog(ApiConfigKit.class);
 
     private static final ThreadLocal<String> TL = new ThreadLocal<String>();
 
@@ -44,46 +42,44 @@ public class ApiConfigKit {
         if (CFG_MAP.size() == 0) {
             CFG_MAP.put(DEFAULT_CFG_KEY, apiConfig);
         }
-        return CFG_MAP.put(apiConfig.getCorpId(), apiConfig);
+        return CFG_MAP.put(apiConfig.getAgentId(), apiConfig);
     }
 
     public static ApiConfig removeApiConfig(ApiConfig apiConfig) {
-        return removeApiConfig(apiConfig.getCorpId());
+        return removeApiConfig(apiConfig.getAgentId());
     }
 
-    public static ApiConfig removeApiConfig(String corpId) {
-        return CFG_MAP.remove(corpId);
+    public static ApiConfig removeApiConfig(String agentId) {
+        return CFG_MAP.remove(agentId);
     }
 
-    public static void setThreadLocalCorpId(String corpId){
-        if (StrKit.isBlank(corpId)) {
-            corpId = CFG_MAP.get(DEFAULT_CFG_KEY).getCorpId();
+    public static void setThreadLocalAgentId(String agentId){
+        if (StrKit.isBlank(agentId)) {
+        	agentId = CFG_MAP.get(DEFAULT_CFG_KEY).getAgentId();
         }
-        TL.set(corpId);
+        TL.set(agentId);
     }
 
-    public static void removeThreadLocalCorpId() {
+    public static void removeThreadLocalAgentId() {
         TL.remove();
     }
 
-    public static String getCorpId() {
-        String corpId = TL.get();
-        if (StrKit.isBlank(corpId)) {
-            corpId = CFG_MAP.get(DEFAULT_CFG_KEY).getCorpId();
+    public static String getAgentId() {
+        String agentId = TL.get();
+        if (StrKit.isBlank(agentId)) {
+        	agentId = CFG_MAP.get(DEFAULT_CFG_KEY).getAgentId();
         }
-        return corpId;
+        return agentId;
     }
 
     public static ApiConfig getApiConfig() {
-        String corpId = getCorpId();
-        return getApiConfig(corpId);
+        return getApiConfig(getAgentId());
     }
 
-    public static ApiConfig getApiConfig(String corpId) {
-        log.debug("corpId: " + corpId);
-        ApiConfig cfg = CFG_MAP.get(corpId);
+    public static ApiConfig getApiConfig(String agentId) {
+        ApiConfig cfg = CFG_MAP.get(agentId);
         if (cfg == null)
-            throw new IllegalStateException("需事先调用 ApiConfigKit.putApiConfig(apiConfig) 将 corpId对应的 ApiConfig 对象存入，" +
+            throw new IllegalStateException("需事先调用 ApiConfigKit.putApiConfig(apiConfig) 将 agentId对应的 ApiConfig 对象存入，" +
                     "如JFinalConfig.afterJFinalStart()中调用, 才可以使用 ApiConfigKit.getApiConfig() 系列方法");
         return cfg;
     }

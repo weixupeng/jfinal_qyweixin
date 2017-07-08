@@ -9,6 +9,7 @@ import com.jfinal.kit.StrKit;
 import com.jfinal.log.Log;
 import com.jfinal.qyweixin.sdk.api.ApiConfigKit;
 import com.jfinal.qyweixin.sdk.kit.MsgEncryptKit;
+import com.jfinal.qyweixin.sdk.kit.SignatureCheckKit;
 import com.jfinal.qyweixin.sdk.msg.InMsgParser;
 import com.jfinal.qyweixin.sdk.msg.in.InImageMsg;
 import com.jfinal.qyweixin.sdk.msg.in.InLocationMsg;
@@ -112,20 +113,28 @@ public abstract class MsgController extends Controller {
 	
 	@Before(NotAction.class)
 	public String getInMsgXml() {
-		if (inMsgXml == null) {
+//		if (inMsgXml == null) {
 			inMsgXml =HttpKit.readData(getRequest());
-//			if (!ApiConfigKit.isDevMode()) {
-//				if (!SignatureCheckKit.me.checkSignature(this,inMsgXml)) {
-//					renderText("签名验证失败，请确定是微信服务器在发送消息过来");
-//				}
-//			}
-			// 是否需要解密消息
-			if (ApiConfigKit.getApiConfig().isEncryptMessage()) {
-				inMsgXml = MsgEncryptKit.decrypt(inMsgXml, getPara("timestamp"), getPara("nonce"), getPara("msg_signature"));
+			
+			String msg_signature = getPara("msg_signature");
+			String timestamp = getPara("timestamp");
+			String nonce = getPara("nonce");
+			String encrypt = SignatureCheckKit.me.getEncrypt(inMsgXml);
+			//签名检测
+			if (SignatureCheckKit.me.checkSignatures(msg_signature,timestamp,nonce,encrypt)) {
+				// 是否需要解密消息
+				if (ApiConfigKit.getApiConfig().isEncryptMessage()) {
+					inMsgXml = MsgEncryptKit.decrypt(inMsgXml, timestamp, nonce, msg_signature);
+				}else {
+					throw new RuntimeException("微信企业号、企业微信必须使用加密模式...");
+				}
+			}else {
+				renderText("签名验证失败，请确定是微信服务器在发送消息过来");
+				throw new RuntimeException("签名验证失败，请确定是微信服务器在发送消息过来");
 			}
-		}
+//		}
 		if (StrKit.isBlank(inMsgXml)) {
-            throw new RuntimeException("请不要在浏览器中请求该连接,调试请查看WIKI:http://git.oschina.net/jfinal/jfinal-weixin/wikis/JFinal-weixin-demo%E5%92%8C%E8%B0%83%E8%AF%95");
+            throw new RuntimeException("请不要在浏览器中请求该连接,调试请在本地做端口映射。参考资料:http://blog.csdn.net/zyw_java/article/details/70341106");
         }
 		return inMsgXml;
 	}

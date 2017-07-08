@@ -16,9 +16,10 @@ import com.jfinal.qyweixin.sdk.kit.SignatureCheckKit;
  * 		因为子类覆盖父类方法会使父类方法配置的拦截器失效，从而失去本拦截器的功能
  */
 public class MsgInterceptor implements Interceptor {
-    private static CorpIdParser _parser = new CorpIdParser.DefaultParameterCorpIdParser();
+	
+    private static AgentIdParser _parser = new AgentIdParser.DefaultParameterAgentIdParser();
 
-    public static void setAppIdParser(CorpIdParser parser) {
+    public static void setAppIdParser(AgentIdParser parser) {
         _parser = parser;
     }
 
@@ -28,33 +29,19 @@ public class MsgInterceptor implements Interceptor {
 			throw new RuntimeException("控制器需要继承 MsgController");
 		
 		try {
-            String corpId = _parser.getCorpId(controller);
+            String agentId = _parser.getAgentId(controller);
 			// 将 ApiConfig 对象与当前线程绑定，以便在后续操作中方便获取该对象： ApiConfigKit.getApiConfig();
-			ApiConfigKit.setThreadLocalCorpId(corpId);
+			ApiConfigKit.setThreadLocalAgentId(agentId);
 			
 			// 如果是服务器配置请求，则配置服务器并返回
 			if (isConfigServerRequest(controller)) {
 				configServer(controller);
 				return ;
 			}
-			
-			 //对开发测试更加友好
-			if (ApiConfigKit.isDevMode()) {
-				inv.invoke();
-			} else {
-				inv.invoke();
-				// 签名检测
-//				if (checkSignature(controller)) {
-//					inv.invoke();
-//				}
-//				else {
-//					controller.renderText("签名验证失败，请确定是微信服务器在发送消息过来");
-//				}
-			}
-			
+			inv.invoke();
 		}
 		finally {
-			ApiConfigKit.removeThreadLocalCorpId();
+			ApiConfigKit.removeThreadLocalAgentId();
 		}
 	}
 	

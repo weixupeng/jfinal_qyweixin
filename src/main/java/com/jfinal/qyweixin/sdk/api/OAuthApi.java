@@ -5,6 +5,7 @@
  */
 package com.jfinal.qyweixin.sdk.api;
 
+import com.jfinal.kit.Kv;
 import com.jfinal.kit.StrKit;
 import com.jfinal.qyweixin.sdk.utils.HttpUtils;
 
@@ -23,23 +24,25 @@ public class OAuthApi {
 	 * openid转换成userid接口
 	 */
 	private static String toUserIdUrl="https://qyapi.weixin.qq.com/cgi-bin/user/convert_to_userid?access_token=";
+	
+	private static String getuserdetailURl = "https://qyapi.weixin.qq.com/cgi-bin/user/getuserdetail?access_token=";
 	/**
 	 * 获取企业授权codeUrl
 	 * @param redirectUri
 	 * @param state
 	 * @return
 	 */
-	public static String getCodeUrl(String redirectUri,String state,boolean isUserInfo){
+	public static String getAuthorizeURL(String redirectUri,String corpId,String state,String agentId,boolean isUserInfo){
 		String scope = "snsapi_base";
 		if (isUserInfo) {
 			scope =  "snsapi_privateinfo";
 		}
 		
 		StringBuffer sbf = new StringBuffer();
-		sbf.append(getCodeUrl).append(ApiConfigKit.getApiConfig().getCorpId())
+		sbf.append(getCodeUrl).append(corpId)
 		.append("&redirect_uri=").append(redirectUri)
 		.append("&response_type=code")
-		.append("&agentid=").append(ApiConfigKit.getApiConfig().getAgentId())
+		.append("&agentid=").append(agentId)
 		.append("&scope=").append(scope);
 		if (!StrKit.isBlank(state)) {
 			sbf.append("&state=").append(state);
@@ -58,30 +61,39 @@ public class OAuthApi {
 		String jsonResult = HttpUtils.get(getUserInfoUrl + AccessTokenApi.getAccessTokenStr() + "&code="+code);
 		return new ApiResult(jsonResult);
 	}
+	
+	
 	/**
-	 * userid转换成openid接口
-	 * @param data
-	 *  {<br/>
-		   "userid": "zhangsan",<br/>
-		   "agentid": 1<br/>
-		}<br/>
+	 * 根据user_ticket获取成员详情
+	 * @param user_ticket 
 	 * @return
 	 */
-	public static ApiResult ToOpenId(String data){
-		String jsonResult=HttpUtils.post(toOpenIdUrl + AccessTokenApi.getAccessTokenStr(), data);
+	public static ApiResult getUserInfo(String user_ticket){
+		String jsonResult = HttpUtils.post(getuserdetailURl + AccessTokenApi.getAccessTokenStr(),user_ticket);
 		return new ApiResult(jsonResult);
 	}
-	/**
-	 * 
-	 * openid转换成userid接口
-	 * @param data
-	 {
-   		"openid": "oDOGms-6yCnGrRovBj2yHij5JL6E"
-	 }
+	
+	/***
+	 *  userid转换成openid
+	 * @param userid
+	 * @param agentid
 	 * @return
 	 */
-	public static ApiResult ToUserId(String data){
-		String jsonResult=HttpUtils.post(toUserIdUrl + AccessTokenApi.getAccessTokenStr(), data);
+	public static ApiResult ToOpenId(String userid,String agentid){
+		Kv kv = Kv.by("userid", userid).set("agentid", agentid);
+		String jsonResult=HttpUtils.post(toOpenIdUrl + AccessTokenApi.getAccessTokenStr(), kv.toJson());
 		return new ApiResult(jsonResult);
 	}
+
+	/**
+	 * openid转换成userid
+	 * @param openid
+	 * @return
+	 */
+	public static ApiResult ToUserId(String openid){
+		Kv kv = Kv.by("openid", openid);
+		String jsonResult=HttpUtils.post(toUserIdUrl + AccessTokenApi.getAccessTokenStr(), kv.toJson());
+		return new ApiResult(jsonResult);
+	}
+
 }
