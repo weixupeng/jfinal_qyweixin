@@ -69,7 +69,6 @@ public class QyWeiXinConfig extends JFinalConfig{
 		me.add("/", QyIndexController.class,"index");	// 第三个参数为该Controller的视图存放路径
 		me.add("/qymsg", QyWeixinMsgController.class);
 		me.add("/qyapi", QyWeixinApiController.class);
-		me.add("/qyoauth", QyOAuthController.class);
 		me.add("/qyjssdk", QyJssdkController.class,"jsp");
 	}
 	

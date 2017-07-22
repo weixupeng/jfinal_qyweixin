@@ -77,6 +77,7 @@ public class MediaApi {
 	 * 上传其他类型永久素材
 	 * @return ApiResult
 	 */
+	@Deprecated
 	public static ApiResult addMaterial(File file,String agentid,MediaType type) {
 		String url = addMaterialUrl.replace("AGENTID", agentid).replace("TYPE", type.get()).replace("ACCESS_TOKEN",AccessTokenApi.getAccessTokenStr());
 		String jsonResult = HttpUtils.upload(url, file, null);
@@ -91,6 +92,7 @@ public class MediaApi {
 	 * @param media_id 要获取的素材的media_id
 	 * @return ApiResult 返回信息
 	 */
+	@Deprecated
 	public static ApiResult delMaterial(String media_id,String agentid) {
 		String url = del_material_url.replace("AGENTID", agentid).replace("MEDIA_ID", media_id).replace("ACCESS_TOKEN",AccessTokenApi.getAccessTokenStr());
 		
@@ -107,6 +109,7 @@ public class MediaApi {
 	 * @param mediaArticles 图文素材
 	 * @return ApiResult 返回信息
 	 */
+	@Deprecated
 	public static ApiResult updateNews(MediaMpNews mediaMpNews) {
 		String url = update_news_url + AccessTokenApi.getAccessTokenStr();
 		String jsonResult = HttpKit.post(url, JsonUtils.toJson(mediaMpNews));
@@ -120,6 +123,7 @@ public class MediaApi {
 	 * 获取素材总数
 	 * @return ApiResult 返回信息
 	 */
+	@Deprecated
 	public static ApiResult getMaterialCount(String agentid) {
 		String url = get_materialcount_url.replace("ACCESS_TOKEN", AccessTokenApi.getAccessTokenStr()).replace("AGENTID", agentid) ;
 		System.out.println(url);
@@ -137,6 +141,7 @@ public class MediaApi {
 	 * @param count 返回素材的数量，取值在1到20之间
 	 * @return ApiResult 返回信息
 	 */
+	@Deprecated
 	public static ApiResult batchGetMaterial(MediaType mediaType, int offset, int count,int agentid) {
 		String url = batchget_material_url + AccessTokenApi.getAccessTokenStr();
 		
