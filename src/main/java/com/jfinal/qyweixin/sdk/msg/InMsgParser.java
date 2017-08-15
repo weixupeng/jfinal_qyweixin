@@ -4,6 +4,7 @@ package com.jfinal.qyweixin.sdk.msg;
 import com.jfinal.kit.LogKit;
 import com.jfinal.kit.StrKit;
 import com.jfinal.qyweixin.sdk.msg.in.InImageMsg;
+import com.jfinal.qyweixin.sdk.msg.in.InLinkMsg;
 import com.jfinal.qyweixin.sdk.msg.in.InLocationMsg;
 import com.jfinal.qyweixin.sdk.msg.in.InMsg;
 import com.jfinal.qyweixin.sdk.msg.in.InNotDefinedMsg;
@@ -64,6 +65,8 @@ public class InMsgParser {
 			return parseInLocationMsg(xmlHelper, toUserName, fromUserName, createTime, msgType, agentId);
 		if ("event".equals(msgType))
 			return parseInEvent(xmlHelper, toUserName, fromUserName, createTime, msgType, agentId);
+		if ("link".equals(msgType))
+			return parseInLinkMsg(xmlHelper, toUserName, fromUserName, createTime, msgType, agentId);
 		LogKit.error("无法识别的消息类型 " + msgType + "，请查阅微信公众平台开发文档");
 		return parseInNotDefinedMsg(xmlHelper, toUserName, fromUserName, createTime, msgType, agentId);
 	}
@@ -73,6 +76,16 @@ public class InMsgParser {
 		InTextMsg msg = new InTextMsg(toUserName, fromUserName, createTime, msgType, agentId);
 		msg.setContent(xmlHelper.getString("//Content"));
 		msg.setMsgId(xmlHelper.getString("//MsgId"));
+		return msg;
+	}
+	
+	private static InMsg parseInLinkMsg(XmlHelper xmlHelper, String toUserName, String fromUserName, Integer createTime,
+			String msgType, String agentId) {
+		InLinkMsg msg = new InLinkMsg(toUserName, fromUserName, createTime, msgType, agentId);
+		msg.setTitle(xmlHelper.getString("//Title"));
+		msg.setMsgId(xmlHelper.getString("//MsgId"));
+		msg.setDescription(xmlHelper.getString("//Description"));
+		msg.setUrl(xmlHelper.getString("//PicUrl"));
 		return msg;
 	}
 

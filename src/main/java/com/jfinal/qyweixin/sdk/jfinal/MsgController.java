@@ -12,6 +12,7 @@ import com.jfinal.qyweixin.sdk.kit.MsgEncryptKit;
 import com.jfinal.qyweixin.sdk.kit.SignatureCheckKit;
 import com.jfinal.qyweixin.sdk.msg.InMsgParser;
 import com.jfinal.qyweixin.sdk.msg.in.InImageMsg;
+import com.jfinal.qyweixin.sdk.msg.in.InLinkMsg;
 import com.jfinal.qyweixin.sdk.msg.in.InLocationMsg;
 import com.jfinal.qyweixin.sdk.msg.in.InMsg;
 import com.jfinal.qyweixin.sdk.msg.in.InNotDefinedEvent;
@@ -53,6 +54,8 @@ public abstract class MsgController extends Controller {
 		InMsg msg = getInMsg();
 		if (msg instanceof InTextMsg)
 			processInTextMsg((InTextMsg) msg);
+		else if (msg instanceof InLinkMsg)
+			processInLinkMsg((InLinkMsg) msg);
 		else if (msg instanceof InImageMsg)
 			processInImageMsg((InImageMsg) msg);
 		else if (msg instanceof InVoiceMsg)
@@ -113,7 +116,7 @@ public abstract class MsgController extends Controller {
 	
 	@Before(NotAction.class)
 	public String getInMsgXml() {
-//		if (inMsgXml == null) {
+		if (inMsgXml == null) {
 			inMsgXml =HttpKit.readData(getRequest());
 			
 			String msg_signature = getPara("msg_signature");
@@ -132,7 +135,7 @@ public abstract class MsgController extends Controller {
 				renderText("签名验证失败，请确定是微信服务器在发送消息过来");
 				throw new RuntimeException("签名验证失败，请确定是微信服务器在发送消息过来");
 			}
-//		}
+		}
 		if (StrKit.isBlank(inMsgXml)) {
             throw new RuntimeException("请不要在浏览器中请求该连接,调试请在本地做端口映射。参考资料:http://blog.csdn.net/zyw_java/article/details/70341106");
         }
@@ -149,6 +152,8 @@ public abstract class MsgController extends Controller {
 	
 	// 处理接收到的文本消息
 	protected abstract void processInTextMsg(InTextMsg inTextMsg);
+	// 处理接收到的链接消息
+	protected abstract void processInLinkMsg(InLinkMsg inLinkMsg);
 	
 	// 处理接收到的图片消息
 	protected abstract void processInImageMsg(InImageMsg inImageMsg);

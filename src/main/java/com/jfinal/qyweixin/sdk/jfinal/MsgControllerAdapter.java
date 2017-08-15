@@ -1,6 +1,7 @@
 package com.jfinal.qyweixin.sdk.jfinal;
 
 import com.jfinal.qyweixin.sdk.msg.in.InImageMsg;
+import com.jfinal.qyweixin.sdk.msg.in.InLinkMsg;
 import com.jfinal.qyweixin.sdk.msg.in.InLocationMsg;
 import com.jfinal.qyweixin.sdk.msg.in.InNotDefinedEvent;
 import com.jfinal.qyweixin.sdk.msg.in.InNotDefinedMsg;
@@ -24,6 +25,12 @@ public abstract  class MsgControllerAdapter extends MsgController {
 	 // 接收文本消息事件
     @Override
     protected abstract void processInTextMsg(InTextMsg inTextMsg);
+    
+    // 接收链接消息事件
+    @Override
+    protected void processInLinkMsg(InLinkMsg inLinkMsg) {
+    	 renderDefault();
+    };
 
     // 接收图片消息事件
     @Override

@@ -7,6 +7,7 @@ import com.jfinal.qyweixin.sdk.api.ConBatchApi;
 import com.jfinal.qyweixin.sdk.api.SendMessageApi;
 import com.jfinal.qyweixin.sdk.jfinal.MsgControllerAdapter;
 import com.jfinal.qyweixin.sdk.msg.in.InImageMsg;
+import com.jfinal.qyweixin.sdk.msg.in.InLinkMsg;
 import com.jfinal.qyweixin.sdk.msg.in.InLocationMsg;
 import com.jfinal.qyweixin.sdk.msg.in.InShortVideoMsg;
 import com.jfinal.qyweixin.sdk.msg.in.InTextMsg;
@@ -88,6 +89,11 @@ public class QyWeixinMsgController extends MsgControllerAdapter {
 		else {
 			renderOutTextMsg("\t文本消息已成功接收，内容为： " + inTextMsg.getContent() + "\n\n" + helpStr);
 		}
+	}
+	
+	@Override
+	protected void processInLinkMsg(InLinkMsg inLinkMsg) {
+		renderOutTextMsg("\t链接消息已成功接收，内容为： " + inLinkMsg.getTitle() + "\n\n"+inLinkMsg.getUrl()+ "\n\n"+inLinkMsg.getDescription() + helpStr);
 	}
 
 	/**
